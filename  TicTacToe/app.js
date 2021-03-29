@@ -25,7 +25,6 @@ const checkWinX = (arr) => {
       console.log('array :>> ', array);
     }
   });
-  console.log('test :>> ', test);
 };
 
 const checkWinO = (arr) => {
