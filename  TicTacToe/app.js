@@ -15,21 +15,32 @@ const data = [];
 sessionStorage.clear('');
 const winX = [];
 const winO = [];
+const test = [];
 
-const checkWinX = (arr) => {
-  const test = [];
+const checkWinX = (n) => {
   // if (arr.length < 3) return;
-  console.log('winX :>> ', arr);
-  winWin.map((array, i) => {
-    if (array.includes(arr[i])) {
-      console.log('array :>> ', array);
-    }
-  });
+  // console.log('winX :>> ', arr);
+  // winWin.map((array, i) => {
+  //   if (array.includes(arr)) {
+  //     console.log('array :>> ', array);
+  //     winX.map((el, index) => {
+  //       if (array.includes(el)) {
+  //         test.push(true);
+  //       }
+  //     });
+  //     // test.push(array);
+  //   }
+  // });
+  const www = winX.sort((a, b) => a - b);
+  const c = winWin.filter((item) => item.includes(n));
+  console.log('c :>> ', c);
+  console.log('winX :>> ', www);
+  console.log('test :>> ', test);
 };
 
 const checkWinO = (arr) => {
   if (arr.length < 3) return;
-  console.log('winO :>> ', arr);
+  // console.log('winO :>> ', arr);
 };
 
 const renderX = (e) => {
@@ -41,6 +52,7 @@ const render0 = (e) => {
 
 const addData = (n, value) => {
   if (value === 'x') {
+    checkWinX(n);
     winX.push(n);
   }
   if (value === 'o') {
