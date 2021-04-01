@@ -1,3 +1,6 @@
+const root = document.querySelector('.root');
+const cardList = [...root.querySelectorAll('.card')];
+sessionStorage.clear('');
 const winWin = [
   [1, 2, 3],
   [4, 5, 6],
@@ -8,39 +11,25 @@ const winWin = [
   [1, 5, 9],
   [3, 5, 7],
 ];
-
-const root = document.querySelector('.root');
-const cardList = [...root.querySelectorAll('.card')];
-const data = [];
-sessionStorage.clear('');
-const winX = [];
-const winO = [];
-const test = [];
+const X = [];
+const Zerro = [];
 
 const checkWinX = (n) => {
-  // if (arr.length < 3) return;
-  // console.log('winX :>> ', arr);
-  // winWin.map((array, i) => {
-  //   if (array.includes(arr)) {
-  //     console.log('array :>> ', array);
-  //     winX.map((el, index) => {
-  //       if (array.includes(el)) {
-  //         test.push(true);
-  //       }
-  //     });
-  //     // test.push(array);
-  //   }
-  // });
-  const www = winX.sort((a, b) => a - b);
-  const c = winWin.filter((item) => item.includes(n));
-  console.log('c :>> ', c);
-  console.log('winX :>> ', www);
-  console.log('test :>> ', test);
+  const sortX = X.sort((a, b) => a - b);
+  const arrayWins = winWin.filter((item) => item.includes(n));
+  const res = arrayWins
+    .filter((arr) => sortX.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
+    .flat();
+  res.length > 1 ? alert('Kрестик выграл') : null;
 };
 
-const checkWinO = (arr) => {
-  if (arr.length < 3) return;
-  // console.log('winO :>> ', arr);
+const checkWinZerro = (n) => {
+  const sortZerro = Zerro.sort((a, b) => a - b);
+  const arrayWins = winWin.filter((item) => item.includes(n));
+  const res = arrayWins
+    .filter((arr) => sortZerro.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
+    .flat();
+  res.length > 1 ? alert('Нолик выграл') : null;
 };
 
 const renderX = (e) => {
@@ -52,14 +41,13 @@ const render0 = (e) => {
 
 const addData = (n, value) => {
   if (value === 'x') {
+    X.push(n);
     checkWinX(n);
-    winX.push(n);
   }
   if (value === 'o') {
-    winO.push(n);
+    Zerro.push(n);
+    checkWinZerro(n);
   }
-  checkWinX(winX);
-  checkWinO(winO);
 };
 
 const renderFigure = (e) => {
@@ -68,12 +56,12 @@ const renderFigure = (e) => {
 
   if (currentFigure === 'o' || currentFigure === '') {
     sessionStorage.setItem('figure', 'x');
-    renderX(e);
     addData(+e.target.dataset.n, 'x');
+    renderX(e);
   } else {
     sessionStorage.setItem('figure', 'o');
-    render0(e);
     addData(+e.target.dataset.n, 'o');
+    render0(e);
   }
 };
 
