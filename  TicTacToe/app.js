@@ -1,6 +1,6 @@
+sessionStorage.clear('');
 const root = document.querySelector('.root');
 const cardList = [...root.querySelectorAll('.card')];
-sessionStorage.clear('');
 const winWin = [
   [1, 2, 3],
   [4, 5, 6],
@@ -14,39 +14,34 @@ const winWin = [
 const X = [];
 const Zerro = [];
 
-const checkWinX = (n) => {
-  const sortX = X.sort((a, b) => a - b);
+const renderTableGame = () => {
+  for (let i = 9; i > 0; i--) {
+    root.insertAdjacentHTML('afterbegin', `<div class="card card-${i}" data-n=${i}></div>`);
+  }
+};
+renderTableGame();
+
+const checkWhoWin = (n, array, text) => {
+  const sortWin = array.sort((a, b) => a - b);
   const arrayWins = winWin.filter((item) => item.includes(n));
   const res = arrayWins
-    .filter((arr) => sortX.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
+    .filter((arr) => sortWin.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
     .flat();
-  res.length > 1 ? alert('Kрестик выграл') : null;
+  res.length > 1 ? alert(`${text} выграл`) : null;
 };
 
-const checkWinZerro = (n) => {
-  const sortZerro = Zerro.sort((a, b) => a - b);
-  const arrayWins = winWin.filter((item) => item.includes(n));
-  const res = arrayWins
-    .filter((arr) => sortZerro.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
-    .flat();
-  res.length > 1 ? alert('Нолик выграл') : null;
-};
-
-const renderX = (e) => {
-  e.target.textContent = 'x';
-};
-const render0 = (e) => {
-  e.target.textContent = '0';
+const renderSymbol = (e, value) => {
+  e.target.textContent = value;
 };
 
 const addData = (n, value) => {
   if (value === 'x') {
     X.push(n);
-    checkWinX(n);
+    checkWhoWin(n, X, 'Крестик');
   }
   if (value === 'o') {
     Zerro.push(n);
-    checkWinZerro(n);
+    checkWhoWin(n, Zerro, 'Нолик');
   }
 };
 
@@ -57,11 +52,11 @@ const renderFigure = (e) => {
   if (currentFigure === 'o' || currentFigure === '') {
     sessionStorage.setItem('figure', 'x');
     addData(+e.target.dataset.n, 'x');
-    renderX(e);
+    renderSymbol(e, 'x');
   } else {
     sessionStorage.setItem('figure', 'o');
     addData(+e.target.dataset.n, 'o');
-    render0(e);
+    renderSymbol(e, 'o');
   }
 };
 
