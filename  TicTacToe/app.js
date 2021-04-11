@@ -1,6 +1,5 @@
 sessionStorage.clear('');
 const root = document.querySelector('.root');
-const cardList = [...root.querySelectorAll('.card')];
 const winWin = [
   [1, 2, 3],
   [4, 5, 6],
@@ -11,15 +10,15 @@ const winWin = [
   [1, 5, 9],
   [3, 5, 7],
 ];
-const X = [];
-const Zerro = [];
+const arrayX = [];
+const arrayZerro = [];
 
-const renderTableGame = () => {
+const createTable = () => {
   for (let i = 9; i > 0; i--) {
     root.insertAdjacentHTML('afterbegin', `<div class="card card-${i}" data-n=${i}></div>`);
   }
 };
-renderTableGame();
+createTable();
 
 const checkWhoWin = (n, array, text) => {
   const sortWin = array.sort((a, b) => a - b);
@@ -30,18 +29,18 @@ const checkWhoWin = (n, array, text) => {
   res.length > 1 ? alert(`${text} выграл`) : null;
 };
 
-const renderSymbol = (e, value) => {
+const createSymbol = (e, value) => {
   e.target.textContent = value;
 };
 
 const addData = (n, value) => {
   if (value === 'x') {
-    X.push(n);
-    checkWhoWin(n, X, 'Крестик');
+    arrayX.push(n);
+    checkWhoWin(n, arrayX, 'Крестик');
   }
   if (value === 'o') {
-    Zerro.push(n);
-    checkWhoWin(n, Zerro, 'Нолик');
+    arrayZerro.push(n);
+    checkWhoWin(n, arrayZerro, 'Нолик');
   }
 };
 
@@ -52,11 +51,11 @@ const renderFigure = (e) => {
   if (currentFigure === 'o' || currentFigure === '') {
     sessionStorage.setItem('figure', 'x');
     addData(+e.target.dataset.n, 'x');
-    renderSymbol(e, 'x');
+    createSymbol(e, 'x');
   } else {
     sessionStorage.setItem('figure', 'o');
     addData(+e.target.dataset.n, 'o');
-    renderSymbol(e, 'o');
+    createSymbol(e, 'o');
   }
 };
 
