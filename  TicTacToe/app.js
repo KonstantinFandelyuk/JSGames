@@ -13,12 +13,13 @@ const winWin = [
 const arrayX = [];
 const arrayZerro = [];
 
-const createTable = () => {
+const renderTableGame = () => {
   for (let i = 9; i > 0; i--) {
     root.insertAdjacentHTML('afterbegin', `<div class="card card-${i}" data-n=${i}></div>`);
   }
 };
-createTable();
+
+renderTableGame();
 
 const checkWhoWin = (n, array, text) => {
   const sortWin = array.sort((a, b) => a - b);
@@ -29,8 +30,12 @@ const checkWhoWin = (n, array, text) => {
   res.length > 1 ? alert(`${text} выграл`) : null;
 };
 
-const createSymbol = (e, value) => {
-  e.target.textContent = value;
+const renderSymbol = (e, value, random) => {
+  if (value === 'o') {
+    random.textContent = value;
+  } else {
+    e.target.textContent = value;
+  }
 };
 
 const addData = (n, value) => {
@@ -44,6 +49,14 @@ const addData = (n, value) => {
   }
 };
 
+root.addEventListener('xEvent', (event) => {
+  const randomNumber =
+    event.detail.emptryArray[Math.floor(Math.random() * event.detail.emptryArray.length)];
+  sessionStorage.setItem('figure', 'o');
+  addData(+randomNumber.dataset.n, 'o');
+  renderSymbol(event, 'o', randomNumber);
+});
+
 const renderFigure = (e) => {
   let currentFigure = sessionStorage.getItem('figure') ? sessionStorage.getItem('figure', '') : '';
   if (e.target.textContent) return;
@@ -51,12 +64,19 @@ const renderFigure = (e) => {
   if (currentFigure === 'o' || currentFigure === '') {
     sessionStorage.setItem('figure', 'x');
     addData(+e.target.dataset.n, 'x');
-    createSymbol(e, 'x');
-  } else {
-    sessionStorage.setItem('figure', 'o');
-    addData(+e.target.dataset.n, 'o');
-    createSymbol(e, 'o');
+    renderSymbol(e, 'x');
   }
+
+  const newEvent = new CustomEvent('xEvent', {
+    detail: {
+      figure: 'o',
+      event: e,
+      emptryArray: [...document.querySelectorAll('.card')].filter(
+        (item) => item.textContent === '',
+      ),
+    },
+  });
+  root.dispatchEvent(newEvent);
 };
 
 root.addEventListener('click', renderFigure);
