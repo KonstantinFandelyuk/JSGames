@@ -1,6 +1,5 @@
 sessionStorage.clear('');
 const root = document.querySelector('.root');
-
 const initialState = {
   winWin: [
     [1, 2, 3],
@@ -14,9 +13,19 @@ const initialState = {
   ],
   arrayX: [],
   arrayZerro: [],
+};
+
+const createElement = {
   createTable() {
     for (let i = 9; i > 0; i--) {
       root.insertAdjacentHTML('afterbegin', `<div class="card card-${i}" data-n=${i}></div>`);
+    }
+  },
+  createSymbol(e, value, random) {
+    if (value === 'o') {
+      random.textContent = value;
+    } else {
+      e.target.textContent = value;
     }
   },
 };
@@ -28,14 +37,6 @@ const checkWhoWin = (n, array, text) => {
     .filter((arr) => sortWin.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
     .flat();
   res.length > 1 ? alert(`${text} выграл`) : null;
-};
-
-const createSymbol = (e, value, random) => {
-  if (value === 'o') {
-    random.textContent = value;
-  } else {
-    e.target.textContent = value;
-  }
 };
 
 const addData = (n, value) => {
@@ -54,7 +55,7 @@ root.addEventListener('xEvent', (event) => {
     event.detail.emptryArray[Math.floor(Math.random() * event.detail.emptryArray.length)];
   sessionStorage.setItem('figure', 'o');
   addData(+randomNumber.dataset.n, 'o');
-  createSymbol(event, 'o', randomNumber);
+  createElement.createSymbol(event, 'o', randomNumber);
 });
 
 const renderFigure = (e) => {
@@ -63,7 +64,7 @@ const renderFigure = (e) => {
   if (currentFigure === 'o' || currentFigure === '') {
     sessionStorage.setItem('figure', 'x');
     addData(+e.target.dataset.n, 'x');
-    createSymbol(e, 'x');
+    createElement.createSymbol(e, 'x');
   }
   const newEvent = new CustomEvent('xEvent', {
     detail: {
@@ -79,6 +80,6 @@ const renderFigure = (e) => {
 
 //start game
 window.addEventListener('load', () => {
-  initialState.createTable();
+  createElement.createTable();
   root.addEventListener('click', renderFigure);
 });
