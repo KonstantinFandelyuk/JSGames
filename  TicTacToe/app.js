@@ -1,5 +1,5 @@
 sessionStorage.clear('');
-const root = document.querySelector('.root');
+const root = document.querySelector(".root");
 const initialState = {
   winWin: [
     [1, 2, 3],
@@ -79,7 +79,5 @@ const renderFigure = (e) => {
 };
 
 //start game
-window.addEventListener('load', () => {
-  createElement.createTable();
-  root.addEventListener('click', renderFigure);
-});
+createElement.createTable();
+root.addEventListener('click', renderFigure);
