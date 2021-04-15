@@ -16,12 +16,19 @@ class TikTakToe {
   startGame = false;
   humanGame = false;
   pcGame = false;
+
   constructor(elem) {
     this.elem = document.querySelector(elem);
-    this.elem.addEventListener('click', (e) => {
-      this.renderFigure(e);
-    });
-    this.msgHello = this.elem.insertAdjacentHTML(
+    this.elem.addEventListener('click', this.renderFigure.bind(this));
+    this.elem.addEventListener('xEvent', this.pcStepEvent.bind(this));
+  }
+
+  doYouHaveStartGame() {
+    this.renderInfoGame();
+  }
+
+  renderInfoGame() {
+    this.elem.insertAdjacentHTML(
       'afterbegin',
       `
       <div class="info-game">
@@ -31,57 +38,83 @@ class TikTakToe {
         <input type="radio" name="CH" id="PC" style="height:20px; width:20px; vertical-align: sub;" data-name="pc"/>
         <label for="Human">Game with Human</label>
         <input type="radio" name="CH" id="Human" style="height:20px; width:20px; vertical-align: sub;" checked data-name="human"/>
-        <button type="button">Начать игру</button>
+        <button type="submit">Начать игру</button>
         </form>
       </div>
       `,
     );
     this.myForm = document.forms.my;
-    this.buttonElement = [...this.myForm.elements].find((item) => item.tagName === 'BUTTON');
-    this.buttonElement.addEventListener('click', (e) => {
-      this.valideStartGame(e);
-    });
+    this.myForm.addEventListener('submit', this.valideStartGame.bind(this));
   }
 
-  doYouHaveStartGame() {
-    this.createTable();
-  }
-
-  valideStartGame() {
+  valideStartGame(event) {
+    event.preventDefault();
     this.inputChecked = [...this.myForm.elements].find((item) => item.checked);
     if (this.inputChecked.dataset.name === 'human') {
       this.startGame = true;
       this.humanGame = true;
       this.createTable();
-      this.msgHello = this.elem.insertAdjacentHTML('afterbegin', ``);
+      this.myForm.remove();
+    } else {
+      this.startGame = true;
+      this.pcGame = true;
+      this.createTable();
+      this.myForm.remove();
     }
   }
 
   createTable() {
-    if (this.startGame) {
+    if (this.startGame)
       for (let i = 9; i > 0; i--) {
         this.elem.insertAdjacentHTML(
           'afterbegin',
           `<div class="card card-${i}" data-n=${i}></div>`,
         );
       }
-    } else {
-      this.msgHello;
-    }
   }
 
-  createSymbol(e, value) {
-    e.target.textContent = value;
-  }
-
-  addData(n, value) {
+  addData(e, value, randomNamberAI) {
     if (value === 'x') {
-      this.arrayX.push(n);
-      this.checkWhoWin(n, this.arrayX, 'Крестик');
+      this.arrayX.push(+e.dataset.n);
+      this.checkWhoWin(+e.dataset.n, this.arrayX, 'Крестик');
+      e.textContent = value;
     }
     if (value === 'o') {
-      this.arrayZerro.push(n);
-      this.checkWhoWin(n, this.arrayZerro, 'Нолик');
+      this.arrayZerro.push(this.pcGame ? e : +e.dataset.n);
+      this.checkWhoWin(this.pcGame ? e : +e.dataset.n, this.arrayZerro, 'Нолик');
+      this.pcGame ? (randomNamberAI.textContent = value) : (e.textContent = value);
+    }
+  }
+
+  pcStepEvent(event) {
+    const randomNumber =
+      event.detail.emptryArray[Math.floor(Math.random() * event.detail.emptryArray.length)];
+    this.currentFigure = 'o';
+    this.addData(+randomNumber.dataset.n, 'o', randomNumber);
+  }
+
+  renderFigure(e) {
+    if (e.target.textContent) return;
+    if (this.startGame) {
+      if (this.currentFigure === 'o' || this.currentFigure === '') {
+        this.currentFigure = 'x';
+        this.addData(e.target, 'x');
+      } else if (this.currentFigure === 'x' && this.humanGame) {
+        this.currentFigure = 'o';
+        this.addData(e.target, 'o');
+      }
+      this.pcGame &&
+        this.elem.dispatchEvent(
+          new CustomEvent('xEvent', {
+            detail: {
+              figure: 'o',
+              event: e,
+              emptryArray: [...document.querySelectorAll('.card')].filter(
+                (item) => item.textContent === '',
+              ),
+            },
+          }),
+        );
     }
   }
 
@@ -92,21 +125,6 @@ class TikTakToe {
       .filter((arr) => sortWin.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
       .flat();
     res.length > 1 ? alert(`${text} выграл`) : null;
-  }
-
-  renderFigure(e) {
-    if (this.startGame) {
-      if (e.target.textContent) return;
-      if (this.currentFigure === 'o' || this.currentFigure === '') {
-        this.currentFigure = 'x';
-        this.addData(+e.target.dataset.n, 'x');
-        this.createSymbol(e, 'x');
-      } else {
-        this.currentFigure = 'o';
-        this.addData(+e.target.dataset.n, 'o');
-        this.createSymbol(e, 'o');
-      }
-    }
   }
 }
 
