@@ -21,9 +21,27 @@ body {
   font-size: 80px;
   cursor: pointer;
 }
-now-game {
+.info-game {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  line-height: 2;
+  text-align: center;
+}
+.info-game label {
+  font-size: 24px;
+}
+.info-game input {
+  font-size: 24px;
+  margin: 0 10px;
+}
+button {
+  display: block;
+  background: transparent;
+  border: 1px solid gray;
+  width: 200px;
+  height: 50px;
+  margin: 20px auto 0 auto;
+  cursor: pointer;
 }

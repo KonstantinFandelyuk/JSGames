@@ -14,20 +14,47 @@ class TikTakToe {
   arrayZerro = [];
   currentFigure = '';
   startGame = false;
+  humanGame = false;
+  pcGame = false;
   constructor(elem) {
     this.elem = document.querySelector(elem);
     this.elem.addEventListener('click', (e) => {
       this.renderFigure(e);
     });
+    this.msgHello = this.elem.insertAdjacentHTML(
+      'afterbegin',
+      `
+      <div class="info-game">
+        <form name="my">
+        <h1>Для старта игры выбирите противна и нажмите Начать</h1>
+        <label for="PC">Game with PC</label>
+        <input type="radio" name="CH" id="PC" style="height:20px; width:20px; vertical-align: sub;" data-name="pc"/>
+        <label for="Human">Game with Human</label>
+        <input type="radio" name="CH" id="Human" style="height:20px; width:20px; vertical-align: sub;" checked data-name="human"/>
+        <button type="button">Начать игру</button>
+        </form>
+      </div>
+      `,
+    );
+    this.myForm = document.forms.my;
+    this.buttonElement = [...this.myForm.elements].find((item) => item.tagName === 'BUTTON');
+    this.buttonElement.addEventListener('click', (e) => {
+      this.valideStartGame(e);
+    });
   }
 
   doYouHaveStartGame() {
-    const qGame = confirm('Хотите начать игру?');
-    console.log('object :>> ', qGame);
-    if (qGame) {
-      this.startGame = true;
-    }
     this.createTable();
+  }
+
+  valideStartGame() {
+    this.inputChecked = [...this.myForm.elements].find((item) => item.checked);
+    if (this.inputChecked.dataset.name === 'human') {
+      this.startGame = true;
+      this.humanGame = true;
+      this.createTable();
+      this.msgHello = this.elem.insertAdjacentHTML('afterbegin', ``);
+    }
   }
 
   createTable() {
@@ -39,13 +66,7 @@ class TikTakToe {
         );
       }
     } else {
-      this.elem.insertAdjacentHTML(
-        'afterbegin',
-        `<div class="">
-      <h1>Начнем игру?</h1>
-      <button type="button" onclick="${this.startGame = true}">Да</button>
-      </div>`,
-      );
+      this.msgHello;
     }
   }
 
@@ -53,41 +74,42 @@ class TikTakToe {
     e.target.textContent = value;
   }
 
+  addData(n, value) {
+    if (value === 'x') {
+      this.arrayX.push(n);
+      this.checkWhoWin(n, this.arrayX, 'Крестик');
+    }
+    if (value === 'o') {
+      this.arrayZerro.push(n);
+      this.checkWhoWin(n, this.arrayZerro, 'Нолик');
+    }
+  }
+
+  checkWhoWin(n, array, text) {
+    const sortWin = array.sort((a, b) => a - b);
+    const arrayWins = winWin.filter((item) => item.includes(n));
+    const res = arrayWins
+      .filter((arr) => sortWin.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
+      .flat();
+    res.length > 1 ? alert(`${text} выграл`) : null;
+  }
+
   renderFigure(e) {
     if (this.startGame) {
       if (e.target.textContent) return;
       if (this.currentFigure === 'o' || this.currentFigure === '') {
         this.currentFigure = 'x';
-        // addData(+e.target.dataset.n, 'x');
+        this.addData(+e.target.dataset.n, 'x');
         this.createSymbol(e, 'x');
       } else {
         this.currentFigure = 'o';
-        // addData(+e.target.dataset.n, 'o');
+        this.addData(+e.target.dataset.n, 'o');
         this.createSymbol(e, 'o');
       }
     }
   }
 }
 
-// const checkWhoWin = (n, array, text) => {
-//   const sortWin = array.sort((a, b) => a - b);
-//   const arrayWins = winWin.filter((item) => item.includes(n));
-//   const res = arrayWins
-//     .filter((arr) => sortWin.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
-//     .flat();
-//   res.length > 1 ? alert(`${text} выграл`) : null;
-// };
-
-// const addData = (n, value) => {
-//   if (value === 'x') {
-//     arrayX.push(n);
-//     checkWhoWin(n, arrayX, 'Крестик');
-//   }
-//   if (value === 'o') {
-//     arrayZerro.push(n);
-//     checkWhoWin(n, arrayZerro, 'Нолик');
-//   }
-// };
-
 const firstGame = new TikTakToe('.root');
+
 firstGame.doYouHaveStartGame();
