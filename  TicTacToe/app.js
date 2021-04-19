@@ -16,6 +16,12 @@ class TikTakToe {
   startGame = false;
   humanGame = false;
   pcGame = false;
+  colorFigure = {
+    colorX: '',
+    colorO: '',
+  };
+  countWinX = sessionStorage.getItem('Крестик') ? sessionStorage.getItem('Крестик') : '';
+  countWinO = sessionStorage.getItem('Нолик') ? sessionStorage.getItem('Нолик') : '';
 
   constructor(elem) {
     this.elem = document.querySelector(elem);
@@ -38,18 +44,24 @@ class TikTakToe {
         <input type="radio" name="CH" id="PC" style="height:20px; width:20px; vertical-align: sub;" data-name="pc"/>
         <label for="Human">Game with Human</label>
         <input type="radio" name="CH" id="Human" style="height:20px; width:20px; vertical-align: sub;" checked data-name="human"/>
+        <p>Выбирите цвет Х</p><input type="color" name="colorX" />
+        <p>Выбирите цвет O</p><input type="color" name="colorO" />
         <button type="submit">Начать игру</button>
         </form>
       </div>
       `,
     );
     this.myForm = document.forms.my;
-    this.myForm.addEventListener('submit', this.valideStartGame.bind(this));
+    this.myForm.addEventListener('submit', this.validateStartGame.bind(this));
   }
 
-  valideStartGame(event) {
+  validateStartGame(event) {
     event.preventDefault();
     this.inputChecked = [...this.myForm.elements].find((item) => item.checked);
+    this.colorFigure = {
+      colorX: this.myForm.elements.colorX.value,
+      colorO: this.myForm.elements.colorO.value,
+    };
     if (this.inputChecked.dataset.name === 'human') {
       this.startGame = true;
       this.humanGame = true;
@@ -90,6 +102,7 @@ class TikTakToe {
     const randomNumber =
       event.detail.emptryArray[Math.floor(Math.random() * event.detail.emptryArray.length)];
     this.currentFigure = 'o';
+    event.target.style.color = `${this.colorFigure.colorX}`;
     this.addData(+randomNumber.dataset.n, 'o', randomNumber);
   }
 
@@ -99,7 +112,9 @@ class TikTakToe {
       if (this.currentFigure === 'o' || this.currentFigure === '') {
         this.currentFigure = 'x';
         this.addData(e.target, 'x');
+        e.target.style.color = `${this.colorFigure.colorO}`;
       } else if (this.currentFigure === 'x' && this.humanGame) {
+        e.target.style.color = `${this.colorFigure.colorX}`;
         this.currentFigure = 'o';
         this.addData(e.target, 'o');
       }
@@ -124,7 +139,12 @@ class TikTakToe {
     const res = arrayWins
       .filter((arr) => sortWin.reduce((acc, el) => (arr.includes(el) ? ++acc : acc), 0) === 3)
       .flat();
-    res.length > 1 ? alert(`${text} выграл`) : null;
+    if (res.length > 1) {
+      this.elem.innerHTML = `<div> 
+      <p>${text} выграл уже</p>
+      <button type="button" onclick="location.reload()">Сыграть еще раз</button>
+      </div>`;
+    }
   }
 }
 
