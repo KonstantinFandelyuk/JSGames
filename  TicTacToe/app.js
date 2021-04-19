@@ -20,8 +20,7 @@ class TikTakToe {
     colorX: '',
     colorO: '',
   };
-  countWinX = sessionStorage.getItem('Крестик') ? sessionStorage.getItem('Крестик') : '';
-  countWinO = sessionStorage.getItem('Нолик') ? sessionStorage.getItem('Нолик') : '';
+  randomColor = ['#662eff', '#a4eb00', '#ff8f05', '#f200ff', '#997aff', '#541941', '#005c69'];
 
   constructor(elem) {
     this.elem = document.querySelector(elem);
@@ -44,8 +43,12 @@ class TikTakToe {
         <input type="radio" name="CH" id="PC" style="height:20px; width:20px; vertical-align: sub;" data-name="pc"/>
         <label for="Human">Game with Human</label>
         <input type="radio" name="CH" id="Human" style="height:20px; width:20px; vertical-align: sub;" checked data-name="human"/>
-        <p>Выбирите цвет Х</p><input type="color" name="colorX" />
-        <p>Выбирите цвет O</p><input type="color" name="colorO" />
+        <p>Выбирите цвет крестикам или цвет будет выбран случайно</p><input type="color" name="colorX" value=${
+          this.randomColor[Math.floor(Math.random() * this.randomColor.length)]
+        }/>
+        <p>Выбирите цвет ноликам или цвет будет выбран случайно</p><input type="color" name="colorO" value=${
+          this.randomColor[Math.floor(Math.random() * this.randomColor.length)]
+        }/>
         <button type="submit">Начать игру</button>
         </form>
       </div>
@@ -59,8 +62,14 @@ class TikTakToe {
     event.preventDefault();
     this.inputChecked = [...this.myForm.elements].find((item) => item.checked);
     this.colorFigure = {
-      colorX: this.myForm.elements.colorX.value,
-      colorO: this.myForm.elements.colorO.value,
+      colorX:
+        this.myForm.elements.colorX.value === '#000000'
+          ? this.randomColor[Math.floor(Math.random() * this.randomColor.length)]
+          : this.myForm.elements.colorX.value,
+      colorO:
+        this.myForm.elements.colorO.value === '#000000'
+          ? this.randomColor[Math.floor(Math.random() * this.randomColor.length)]
+          : this.myForm.elements.colorO.value,
     };
     if (this.inputChecked.dataset.name === 'human') {
       this.startGame = true;
@@ -141,7 +150,7 @@ class TikTakToe {
       .flat();
     if (res.length > 1) {
       this.elem.innerHTML = `<div> 
-      <p>${text} выграл уже</p>
+      <h1>${text} выграл</h1>
       <button type="button" onclick="location.reload()">Сыграть еще раз</button>
       </div>`;
     }
