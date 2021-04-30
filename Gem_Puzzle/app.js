@@ -1,31 +1,45 @@
-// const initialArray = [
-//   { text: 1 },
-//   { text: 2 },
-//   { text: 3 },
-//   { text: 4 },
-//   { text: 5 },
-//   { text: 6 },
-//   { text: 7 },
-//   { text: 8 },
-//   { text: 9 },
-//   { text: 10 },
-//   { text: 11 },
-//   { text: 12 },
-//   { text: 13 },
-//   { text: 14 },
-//   { text: 15 },
-//   { active: true, text: '' },
-// ];
+const win = {
+  0: [1, 4],
+  1: [2, 5],
+  2: [3, 6],
+  3: [2, 7],
+  4: [0, 5, 8],
+  5: [1, 4, 6, 9],
+  6: [2, 5, 7, 10],
+  7: [3, 11],
+  8: [4, 9, 12],
+  9: [5, 8, 10, 13],
+  10: [6, 9, 11, 14],
+  11: [7, 10, 15],
+  12: [8, 13],
+  13: [9, 12, 14],
+  14: [10, 13, 15],
+  15: [11, 14],
+};
+
 class GemPuzlle {
   initialArray = [];
-  switchSquare = 0;
-  newPlaceSquare = 0;
-  counetr = 0;
+  currentCell = null;
+  searchIndexElement = null;
   constructor(element, cellNumber) {
     this.elem = document.querySelector(element);
     this.cellNumber = cellNumber;
     this.elem.addEventListener('click', this.stepUser.bind(this));
   }
+
+  shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // случайный индекс от 0 до i
+
+      // поменять элементы местами
+      // мы используем для этого синтаксис "деструктурирующее присваивание"
+      // подробнее о нём - в следующих главах
+      // то же самое можно записать как:
+      // let t = array[i]; array[i] = array[j]; array[j] = t
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
   createArrayCells() {
     let count = 1;
     for (let i = 0; i <= this.cellNumber; i++) {
@@ -35,47 +49,58 @@ class GemPuzlle {
       }
       this.initialArray.push({ text: count++ });
     }
+    this.shuffleArray(this.initialArray);
   }
 
   renderTable() {
     this.elem.innerHTML = '';
-    this.createArrayCells();
     for (let i = 0; i < this.initialArray.length; i++) {
       this.elem.innerHTML += `<div class="cell cell-${i} ${
         this.initialArray[i].active ? 'active' : ''
       }" data-i=${i}>${this.initialArray[i].text}</div>`;
     }
   }
-  stepNumberClean() {
-    this.switchSquare = null;
-    this.newPlaceSquare = null;
+
+  seatchElemnt(number) {
+    for (const key in win) {
+      if (+key === +number) {
+        win[key].forEach((element) => {
+          this.initialArray.forEach((item, i) => {
+            if (i === element && item.active) {
+              this.searchIndexElement = i;
+            }
+          });
+        });
+      }
+    }
   }
 
-  switchCell() {
-    console.log('object :>> ', this.switchSquare);
-    console.log('newPlaceSquare :>> ', this.newPlaceSquare);
-    this.initialArray[this.newPlaceSquare].active === true ? null : alert('Не корретный ход');
+  switchCell(elem) {
+    this.seatchElemnt(elem);
+    if (this.searchIndexElement === undefined || this.searchIndexElement === null) {
+      alert('Не корретный ход');
+      return;
+    }
 
-    [this.initialArray[+this.switchSquare], this.initialArray[+this.newPlaceSquare]] = [
-      this.initialArray[+this.newPlaceSquare],
-      this.initialArray[+this.switchSquare],
+    [this.initialArray[+this.currentCell], this.initialArray[+this.searchIndexElement]] = [
+      this.initialArray[+this.searchIndexElement],
+      this.initialArray[+this.currentCell],
     ];
+
     this.renderTable();
+    this.currentCell = null;
+    this.searchIndexElement = null;
   }
 
   stepUser(event) {
     const { dataset } = event.target;
-    if (this.counetr === 0) {
-      this.switchSquare = +dataset.i;
-      this.counetr++;
-    } else {
-      this.newPlaceSquare = +dataset.i;
-      this.counetr--;
-      this.switchCell();
-    }
+    this.currentCell = +dataset.i;
+    this.counetr++;
+    this.switchCell(+dataset.i);
   }
 }
 
 const firstGame = new GemPuzlle('.root', 15);
 
+firstGame.createArrayCells();
 firstGame.renderTable();
