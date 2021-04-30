@@ -1,23 +1,105 @@
+const stepChecker = {
+  0: [1, 4],
+  1: [0, 2, 5],
+  2: [3, 6],
+  3: [2, 7],
+  4: [0, 5, 8],
+  5: [1, 4, 6, 9],
+  6: [2, 5, 7, 10],
+  7: [3, 6, 11],
+  8: [4, 9, 12],
+  9: [5, 8, 10, 13],
+  10: [6, 9, 11, 14],
+  11: [7, 10, 15],
+  12: [8, 13],
+  13: [9, 12, 14],
+  14: [10, 13, 15],
+  15: [11, 14],
+};
+
 class GemPuzlle {
-  initialArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, ''];
-  constructor(element) {
+  initialArray = [];
+  currentCell = null;
+  searchIndexElement = null;
+  constructor(element, cellNumber) {
     this.elem = document.querySelector(element);
-    this.elem.addEventListener('click', this.switchCell.bind(this));
+    this.cellNumber = cellNumber;
+    this.elem.addEventListener('click', this.stepUser.bind(this));
+  }
+
+  shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // случайный индекс от 0 до i
+
+      // поменять элементы местами
+      // мы используем для этого синтаксис "деструктурирующее присваивание"
+      // подробнее о нём - в следующих главах
+      // то же самое можно записать как:
+      // let t = array[i]; array[i] = array[j]; array[j] = t
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  createArrayCells() {
+    let count = 1;
+    for (let i = 0; i <= this.cellNumber; i++) {
+      if (this.cellNumber === i) {
+        this.initialArray.push({ active: true, text: '' });
+        break;
+      }
+      this.initialArray.push({ text: count++ });
+    }
+    this.shuffleArray(this.initialArray);
   }
 
   renderTable() {
-    for (let i = this.initialArray.length; i > 0; i--) {
-      this.elem.insertAdjacentHTML(
-        'afterbegin',
-        `<div class="cell cell-${i}" data-n=${i}>${i}</div>`,
-      );
+    this.elem.innerHTML = '';
+    for (let i = 0; i < this.initialArray.length; i++) {
+      this.elem.innerHTML += `<div class="cell cell-${i} ${
+        this.initialArray[i].active ? 'active' : ''
+      }" data-i=${i}>${this.initialArray[i].text}</div>`;
     }
   }
-  switchCell(event) {
-    console.log('event :>> ', event.target);
+
+  seatchElemnt(number) {
+    for (const key in stepChecker) {
+      if (+key === +number) {
+        stepChecker[key].forEach((element) => {
+          this.initialArray.forEach((item, i) => {
+            if (i === element && item.active) {
+              this.searchIndexElement = i;
+            }
+          });
+        });
+      }
+    }
+  }
+
+  switchCell(elem) {
+    this.seatchElemnt(elem);
+    if (this.searchIndexElement === undefined || this.searchIndexElement === null) {
+      alert('Не корретный ход');
+      return;
+    }
+
+    [this.initialArray[+this.currentCell], this.initialArray[+this.searchIndexElement]] = [
+      this.initialArray[+this.searchIndexElement],
+      this.initialArray[+this.currentCell],
+    ];
+
+    this.renderTable();
+    this.currentCell = null;
+    this.searchIndexElement = null;
+  }
+
+  stepUser(event) {
+    const { dataset } = event.target;
+    this.currentCell = +dataset.i;
+    this.switchCell(+dataset.i);
   }
 }
 
-const firstGame = new GemPuzlle('.root');
+const firstGame = new GemPuzlle('.root', 15);
 
+firstGame.createArrayCells();
 firstGame.renderTable();
