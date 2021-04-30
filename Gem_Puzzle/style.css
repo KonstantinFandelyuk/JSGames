@@ -16,6 +16,21 @@
   justify-content: center;
   align-items: center;
   user-select: none;
+  transition: 0.4s linear;
+}
+.cell:hover {
+  transition: 0.4s linear;
+  background-color: darkgray;
+  color: white;
+}
+.cell.active {
+  border: 2px solid white;
+  cursor: unset;
+}
+.cell.active:hover {
+  transition: 0.4s linear;
+  background-color: white;
+  color: black;
 }
 /* .active {
   background: red;
