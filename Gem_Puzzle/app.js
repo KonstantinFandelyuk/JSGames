@@ -95,7 +95,6 @@ class GemPuzlle {
   stepUser(event) {
     const { dataset } = event.target;
     this.currentCell = +dataset.i;
-    this.counetr++;
     this.switchCell(+dataset.i);
   }
 }
