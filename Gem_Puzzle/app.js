@@ -1,7 +1,7 @@
 const stepChecker = {
   0: [1, 4],
   1: [0, 2, 5],
-  2: [3, 6],
+  2: [1, 3, 6],
   3: [2, 7],
   4: [0, 5, 8],
   5: [1, 4, 6, 9],
@@ -44,7 +44,7 @@ class GemPuzlle {
     let count = 1;
     for (let i = 0; i <= this.cellNumber; i++) {
       if (this.cellNumber === i) {
-        this.initialArray.push({ active: true, text: '' });
+        this.initialArray.push({ active: true, text: '16' });
         break;
       }
       this.initialArray.push({ text: count++ });
@@ -88,6 +88,7 @@ class GemPuzlle {
     ];
 
     this.renderTable();
+    this.checkWin();
     this.currentCell = null;
     this.searchIndexElement = null;
   }
@@ -96,6 +97,16 @@ class GemPuzlle {
     const { dataset } = event.target;
     this.currentCell = +dataset.i;
     this.switchCell(+dataset.i);
+  }
+  checkWin() {
+    let count = sessionStorage.getItem('step') ? sessionStorage.getItem('step') : 0;
+    const winArray = this.initialArray.slice().sort((a, b) => a.text - b.text);
+    if (winArray.every((elem, i) => elem.text === this.initialArray[i].text)) {
+      console.log('WIN');
+    } else {
+      count++;
+      sessionStorage.setItem('step', count);
+    }
   }
 }
 

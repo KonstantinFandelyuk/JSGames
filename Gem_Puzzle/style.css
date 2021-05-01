@@ -26,9 +26,10 @@
 .cell.active {
   border: 2px solid white;
   cursor: unset;
+  color: white;
 }
 .cell.active:hover {
   transition: 0.4s linear;
   background-color: white;
-  color: black;
+  color: white;
 }
