@@ -102,7 +102,8 @@ class GemPuzlle {
     let count = sessionStorage.getItem('step') ? sessionStorage.getItem('step') : 0;
     const winArray = this.initialArray.slice().sort((a, b) => a.text - b.text);
     if (winArray.every((elem, i) => elem.text === this.initialArray[i].text)) {
-      console.log('WIN');
+      alert(`Вы выграли за ${count} шагов`);
+      sessionStorage.removeItem('step');
     } else {
       count++;
       sessionStorage.setItem('step', count);
