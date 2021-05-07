@@ -41,8 +41,8 @@ class ClassicPuzzle {
             (y * 100) / (this.countY - 1)
           }%`;
           imgElement.style.backgroundSize = `${this.countX * 100}% ${this.countY * 100}% `;
-          imgElement.style.top = `${(x * 100) / this.countX}%`;
-          imgElement.style.left = `${(y * 100) / this.countY}%`;
+          imgElement.style.top = `${(y * 100) / this.countY}%`;
+          imgElement.style.left = `${(x * 100) / this.countX}%`;
           this.container.append(imgElement);
           imgElement.addEventListener('mousedown', this.stepUser.bind(this, x, y));
         }
@@ -51,6 +51,9 @@ class ClassicPuzzle {
   }
 
   stepUser(x, y, event) {
+    console.log('x, :>> ', x);
+    console.log('y :>> ', y);
+    console.log('event :>> ', event);
     let shiftX = event.clientX - event.target.getBoundingClientRect().left;
     let shiftY = event.clientY - event.target.getBoundingClientRect().top;
 
@@ -81,6 +84,6 @@ class ClassicPuzzle {
     };
   }
 }
-const startGame = new ClassicPuzzle('.root', 2, 2);
+const startGame = new ClassicPuzzle('.root', 4, 4);
 
 startGame.canvasView();

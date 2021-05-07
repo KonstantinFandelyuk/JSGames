@@ -23,6 +23,8 @@ canvas {
   cursor: pointer; */
 }
 .container {
+  position: relative;
+  width: 800px;
   /* width: 100%;
   display: flex;
   max-width: 800px;
