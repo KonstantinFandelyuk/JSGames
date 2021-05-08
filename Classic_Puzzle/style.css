@@ -7,30 +7,52 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   min-height: 100vh;
 }
-body {
-  margin: 0px;
-  padding: 0px;
-}
+
 input {
   display: block;
 }
-canvas {
-  /* border: 1px solid black;
-  width: 200px;
-  height: 200px;
-  cursor: pointer; */
+
+.informationContainer {
+  margin: 20px 0;
+  display: flex;
+  position: relative;
 }
+.informationElement {
+  border: 1px solid black;
+  border-radius: 50%;
+  margin: 0 10px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s linear;
+}
+
+.informationImage {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 400px;
+  height: 400px;
+  z-index: -1;
+  opacity: 0;
+}
+
+.informationElement:hover + .informationImage {
+  transition: 0.3s linear;
+  z-index: 1;
+  opacity: 1;
+}
+
 .container {
   position: relative;
   width: 800px;
-  /* width: 100%;
-  display: flex;
-  max-width: 800px;
-  flex-wrap: wrap;
-  font-size: 0;
-  position: relative; */
+  border: 1px solid lightgreen;
 }
 
 .pic {
@@ -39,18 +61,6 @@ canvas {
   background-repeat: no-repeat;
   width: calc(100% / var(--countX));
   height: calc(100% / var(--countY));
-  border: 1px solid rgb(0, 0, 0);
+  border: 1px solid rgb(79, 55, 122);
   cursor: pointer;
 }
-/* .pic.pic-1 {
-  background-position: 0% 0%;
-}
-.pic.pic-2 {
-  background-position: 100% 0%;
-}
-.pic.pic-3 {
-  background-position: 0% 100%;
-}
-.pic.pic-4 {
-  background-position: 100% 100%;
-} */
