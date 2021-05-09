@@ -46,7 +46,7 @@ class ClassicPuzzle {
     this.container.addEventListener('mousedown', this.stepUser.bind(this));
   }
 
-  createSelectList() {
+  createOptionsList() {
     for (let i = 0; i < 4; i++) {
       const options = document.createElement('option');
       options.setAttribute('data-countx', this.optionsList[i].countX);
@@ -103,8 +103,9 @@ class ClassicPuzzle {
       // let shiftY = event.clientY - elem.getBoundingClientRect().top;
       this.container.append(elem);
 
-      let shiftX = event.clientX - this.container.getBoundingClientRect().left;
-      let shiftY = event.clientY - this.container.getBoundingClientRect().top;
+      let shiftX = event.pageX - event.offsetX;
+      let shiftY = event.pageY - event.offsetY;
+
       function moveAt(pageX, pageY) {
         elem.style.left = pageX - shiftX + 'px';
         elem.style.top = pageY - shiftY + 'px';
@@ -124,4 +125,5 @@ class ClassicPuzzle {
   }
 }
 const startGame = new ClassicPuzzle('.root');
-startGame.createSelectList();
+startGame.createOptionsList();
+// startGame.canvasView();
