@@ -11,10 +11,6 @@
   min-height: 100vh;
 }
 
-input {
-  display: block;
-}
-
 .informationContainer {
   margin: 20px 0;
   display: flex;

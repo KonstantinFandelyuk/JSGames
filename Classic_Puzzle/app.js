@@ -28,9 +28,6 @@ class ClassicPuzzle {
     this.informationMessage.textContent = 'Как должна выглядеть картинка';
     this.informationElement.textContent = 'i';
     //AddStyle
-    this.container.style.setProperty('--countX', this.countX);
-    this.container.style.setProperty('--countY', this.countY);
-    this.container.style.aspectRatio = `${this.countX} / ${this.countY}`;
     //
     this.elementRoot.append(this.informationContainer);
     this.informationContainer.append(this.informationMessage);
@@ -58,8 +55,8 @@ class ClassicPuzzle {
 
   selectListValue(event) {
     const checkValueIndex = event.target.options.selectedIndex;
-    this.countX = event.target.options[checkValueIndex].dataset.countx;
-    this.countY = event.target.options[checkValueIndex].dataset.county;
+    this.countX = +event.target.options[checkValueIndex].dataset.countx;
+    this.countY = +event.target.options[checkValueIndex].dataset.county;
   }
 
   selectUserFiles(event) {
@@ -75,6 +72,9 @@ class ClassicPuzzle {
       this.input.style.display = 'none';
       this.select.style.display = 'none';
       this.container.style.setProperty('--bg-image', `url(${img})`);
+      this.container.style.setProperty('--countX', this.countX);
+      this.container.style.setProperty('--countY', this.countY);
+      this.container.style.aspectRatio = `${this.countX} / ${this.countY}`;
       this.informationImage.src = img;
       for (let y = 0; y < this.countY; y++) {
         for (let x = 0; x < this.countX; x++) {
@@ -97,7 +97,6 @@ class ClassicPuzzle {
 
   stepUser(event) {
     const elem = event.target.closest('.pic');
-    console.log('event :>> ', event);
     if (elem) {
       // let shiftX = event.clientX - elem.getBoundingClientRect().left;
       // let shiftY = event.clientY - elem.getBoundingClientRect().top;
@@ -105,6 +104,8 @@ class ClassicPuzzle {
 
       let shiftX = event.pageX - event.offsetX;
       let shiftY = event.pageY - event.offsetY;
+      console.log('object :>> ', shiftX);
+      console.log('object :>> ', shiftY);
 
       function moveAt(pageX, pageY) {
         elem.style.left = pageX - shiftX + 'px';
